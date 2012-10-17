@@ -37,11 +37,11 @@
 # * dp                  = Device Pixelate. WVGA/QHD = 3, HVGA = 2.
 #                         dp calculated with = round(min(width,height) / 160)
 #
-ini_set("dp","4");
+ini_set("dp","3");
 ini_set("rom_name",             ">>> Pimp My Rom <<<");
 ini_set("rom_version",          "2.0");
 ini_set("rom_author",           "Androguide.fr");
-ini_set("rom_device",           "Any android device");
+ini_set("rom_device",           "Any HDPI android device");
 ini_set("rom_date",             "October 10th, 2012");
 
 ##
