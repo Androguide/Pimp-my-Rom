@@ -1,0 +1,24 @@
+#!/system/bin/sh
+
+chmod -R 777 /system/etc/sysctl.conf
+
+busybox sysctl -e -w kernel.sched_min_granularity_ns=1500000;
+busybox sysctl -e -w kernel.sched_latency_ns=18000000;
+busybox sysctl -e -w kernel.sched_wakeup_granularity_ns=3000000;
+busybox sysctl -e -w kernel.panic=0;
+busybox sysctl -e -w kernel.panic_on_oops=1;
+busybox sysctl -e -w kernel.msgmni=2048;
+busybox sysctl -e -w kernel.msgmax=64000;
+busybox sysctl -e -w kernel.shmmni=4096;
+busybox sysctl -e -w kernel.shmall=2097152;
+busybox sysctl -e -w kernel.shmmax=268435456;
+busybox sysctl -e -w kernel.sem='500 512000 64 2048';
+busybox sysctl -e -w kernel.sched_features=24189;
+busybox sysctl -e -w kernel.hung_task_timeout_secs=30;
+busybox sysctl -e -w kernel.sched_compat_yield=1;
+busybox sysctl -e -w kernel.sched_shares_ratelimit=256000;
+busybox sysctl -e -w kernel.sched_child_runs_first=0;
+busybox sysctl -e -w kernel.threads-max=5000;
+busybox sysctl -e -w fs.lease-break-time=10;
+busybox sysctl -e -w fs.file-max=65536;
+

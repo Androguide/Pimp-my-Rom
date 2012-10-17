@@ -1,0 +1,2058 @@
+#
+# Updater-script for Pimp My Rom by Androguide.fr
+#
+ui_print("");
+ui_print("");
+ui_print("=================================");
+ui_print("Pimp My Rom by Androguide.fr");
+ui_print("Please be patient. I Hope you enjoyed the installer features.");
+ui_print("=================================");
+ui_print("");
+ui_print("");
+ui_print("");
+ui_print("");
+ui_print("@Unmounting devices");
+run_program("/sbin/busybox", "umount", "/system");
+run_program("/sbin/busybox", "umount", "/cache");
+set_progress(0.05);
+ui_print("");
+ui_print("");
+ui_print(">>> Setting up installation....");
+ui_print("");
+ui_print("");
+ui_print(">>> Mounting partitions");
+	run_program("/sbin/busybox", "mount", "/system");
+	run_program("/sbin/busybox", "mount", "/data");
+ui_print("");
+ui_print("");
+ui_print(">>> Cleaning process");
+	delete_recursive("/data/dalvik-cache");
+	delete_recursive("/data/resource-cache");
+
+
+########## AROMA ##########
+
+run_program("/sbin/sync");
+package_extract_file("sleep", "/tmp/aroma-data/sleep");
+
+### -- build.prop backup -- ###
+package_extract_file("backup_buildprop.sh", "/tmp/backup_buildprop.sh");
+ui_print("@Backing-up original build.prop for eventual use of Un-Pimp My Rom...");
+set_perm(0, 0, 0777, "/tmp/backup_buildprop.sh");
+run_program("/tmp/backup_buildprop.sh", "");
+ui_print("Original build.prop backed-up");
+
+
+# Options for init.d Tweaks
+ui_print("@Init.d tweaks...");
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.1") == "1" then
+ui_print("Installing Touchscreen responsiveness Tweaks....");
+	package_extract_file("aroma/tweaks/initd/S89touch", "/system/etc/init.d/S89touch");
+	package_extract_file("aroma/tweaks/initd/S89touch", "/tmp/touch");
+	set_perm(0, 0, 0777, "/tmp/touch");
+	run_program("/tmp/touch");
+set_progress(0.055);	
+	endif;
+
+#######################################################################################
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.2") == "1" then
+ui_print("Installing Internet Speed Tweaks....");
+	package_extract_file("aroma/tweaks/initd/S06netspeed", "/system/etc/init.d/S06netspeed");
+	package_extract_file("aroma/tweaks/initd/S06netspeed", "/tmp/netspeed");
+	set_perm(0, 0, 0777, "/tmp/netspeed");
+	run_program("/tmp/netspeed");
+set_progress(0.06);	
+	endif;
+
+#######################################################################################
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.3") == "1" then
+ui_print("Installing Battery Tweaks....");
+	package_extract_file("aroma/tweaks/initd/S86battery", "/system/etc/init.d/S86battery");
+	package_extract_file("aroma/tweaks/initd/S86battery", "/tmp/battery");
+	set_perm(0, 0, 0777, "/tmp/battery");
+	run_program("/tmp/battery");
+set_progress(0.07);
+	endif;
+
+#######################################################################################
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.4") == "1" then
+ui_print("Applying Kernel Tweaks....");
+	package_extract_file("aroma/tweaks/initd/S07kernel", "/system/etc/init.d/S07kernel");
+	package_extract_file("aroma/tweaks/initd/S07kernel", "/tmp/kernel");
+	set_perm(0, 0, 0777, "/tmp/kernel");
+	run_program("/tmp/kernel");
+set_progress(0.08);
+	endif;
+
+#######################################################################################
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.5") == "1" then
+ui_print("Applying Ondemand Kernel Governor Tweaks....");
+	package_extract_file("aroma/tweaks/initd/S03ondemand", "/system/etc/init.d/S03ondemand");
+	package_extract_file("aroma/tweaks/initd/S03ondemand", "/tmp/ondemand");
+	set_perm(0, 0, 0777, "/tmp/ondemand");
+	run_program("/tmp/ondemand");
+set_progress(0.09);
+	endif;
+
+#######################################################################################
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.6") == "1" then
+ui_print("Tweaking Dalvik Virtual Machine....");
+	package_extract_file("aroma/tweaks/initd/S10vm", "/system/etc/init.d/S10vm");
+	package_extract_file("aroma/tweaks/initd/S10vm", "/tmp/vm");
+	set_perm(0, 0, 0777, "/tmp/vm");
+	run_program("/tmp/vm");
+set_progress(0.10);
+	endif;
+
+#######################################################################################
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.7") == "1" then
+ui_print("Copying sqlite3 Defragmentation bootscript....");
+	package_extract_file("aroma/tweaks/initd/S01defrag", "/system/etc/init.d/S01defrag");
+	package_extract_file("aroma/tweaks/initd/S01defrag", "/tmp/S01defrag");
+	set_perm(0, 0, 0777, "/tmp/S01defrag");
+	run_program("/tmp/defrag");
+set_progress(0.11);
+	endif;
+
+#######################################################################################
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.8") == "1" then
+ui_print("Increasing data storage by moving dalvik-cache to /cache if possible...");
+	package_extract_file("aroma/tweaks/initd/S41dvm2cache", "/system/etc/init.d/S41dvm2cache");
+	package_extract_file("aroma/tweaks/initd/S41dvm2cache", "/tmp/dvm2cache.sh");
+	set_perm(0, 0, 0777, "/tmp/dvm2cache.sh");
+	run_program("/tmp/dvm2cache.sh");
+set_progress(0.12);
+	endif;
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.9") == "1" then
+ui_print("Bind-Mounting dalvik-cache so the device can still boot without sdcard....");
+	package_extract_file("aroma/tweaks/initd/S13bind", "/system/etc/init.d/S13bind");
+set_progress(0.13);
+	endif;
+	
+#######################################################################################	
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.10") == "1" then
+ui_print("Setting strict minimum free memory handler...");
+set_progress(0.14);
+	endif;
+
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.11") == "1" then
+ui_print("Installing ext4-fs Performance Tweak....");
+	package_extract_file("aroma/tweaks/ext4/ext4", "/tmp/ext4");
+	package_extract_file("aroma/tweaks/ext4/tune2fs", "/tmp/tune2fs");
+	package_extract_file("aroma/tweaks/initd/S84ext4", "/system/etc/init.d/S84ext4");
+	set_perm(0, 0, 0777, "/tmp/ext4");
+	set_perm(0, 0, 0777, "/tmp/tune2fs");
+	run_program("/tmp/ext4");
+	endif;
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.12") == "1" then
+ui_print("Enabling GPU Rendering Tweak....");
+	package_extract_dir("aroma/tweaks/gpu", "/system");
+	endif;
+	
+######################################################################################
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.13") == "1" then
+ui_print("Enabling misc ram tweaks....");
+endif;
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.14") == "1" then
+ui_print("Installing Multi-Tasking Tweaks....");
+	package_extract_dir("aroma/tweaks/memory", "/system");
+set_progress(0.16);
+	endif;
+
+#######################################################################################	
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.15") == "1" then
+ui_print("Installing SQLite Tweaks....");
+	package_extract_dir("aroma/tweaks/sqlite", "/system");
+	set_perm(0, 0, 04755, "/system/xbin/sqlite3");
+	endif;
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.16") == "1" then
+ui_print("Installing Experimental Tweaks....");
+	package_extract_dir("aroma/tweaks/experimental", "/system");
+	endif;
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.17") == "1" then
+ui_print("Installing various smoothness tweaks...");
+	package_extract_file("aroma/tweaks/initd/S99smoothness", "/system/etc/init.d/S99smoothness");
+	package_extract_dir("aroma/tweaks/sl", "/system/etc/init.d");
+	package_extract_file("aroma/tweaks/initd/S99smoothness", "/tmp/smoothness");
+	set_perm(0, 0, 0777, "/tmp/smoothness");
+	run_program("/tmp/smoothness");
+
+set_progress(0.17);
+	endif;
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.18") == "1" then
+ui_print("Applying micro sdcard tweaks....");
+	package_extract_file("aroma/tweaks/initd/S83extsd", "/system/etc/init.d/S83extsd");
+	package_extract_file("aroma/tweaks/initd/S83extsd", "/tmp/S83extsd");
+	set_perm(0, 0, 0777, "/tmp/S83extsd");
+	run_program("/tmp/S83extsd");
+	endif;
+
+########################################################################################
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.19") == "1" then
+ui_print("Internal sd I/O tweaks....");
+	endif;
+
+#######################################################################################
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.20") == "1" then
+ui_print("Installing zipalign binaries....");
+	package_extract_dir("aroma/tweaks/zipalign", "/system");
+	endif;
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.21") == "1" then
+ui_print("Installing Thunderbolt system_tweak....");
+	package_extract_dir("aroma/tweaks/thunderbolt", "/system");
+set_progress(0.18);
+	endif;
+	
+#######################################################################################	
+
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.22") == "1" then
+ui_print("Installing Thunderbolt cpu/gpu add-on....");
+	endif;
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.23") == "1" then
+ui_print("Installing Thunderbolt cfs tweaks....");
+	package_extract_dir("aroma/tweaks/tb-addons/cfs", "/system");
+	endif;
+
+#######################################################################################
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.24") == "1" then
+ui_print("Installing Thunderbolt tcp buffers tweaks....");
+	package_extract_dir("aroma/tweaks/tb-addons/tcp", "/system");
+set_progress(0.19);
+	endif;
+
+#######################################################################################	
+	
+	if file_getprop("/tmp/aroma-data/tweaks.prop","item.1.25") == "1" then
+ui_print("Installing Thunderbolt sqlite3 optimization....");
+	package_extract_dir("aroma/tweaks/tb-addons/sql", "/system");
+	endif;
+
+
+###-- Build.prop Tweaks
+
+ui_print("@Build.prop Tweaks...");
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.1") == "1" then
+ui_print("Writing All build.prop Tweaks :");
+	package_extract_file("aroma/tweaks/build.prop/all_tweaks.sh", "/tmp/all_tweaks.sh");
+	set_perm(0, 0, 0777, "/tmp/all_tweaks.sh");
+	run_program("/tmp/all_tweaks.sh");
+ui_print("Writing 3G build.prop Tweaks....");
+set_progress(0.20);
+ui_print("Writing Battery Saving build.prop Tweaks....");
+set_progress(0.21);
+ui_print("Writing Camera quality build.prop Tweaks....");
+set_progress(0.22);
+ui_print("Writing Wifi connect speed build.prop Tweaks....");
+set_progress(0.23);
+ui_print("Writing Dalvik ram build.prop Tweaks....");
+set_progress(0.24);
+ui_print("Writing Deep-Sleep build.prop Tweaks....");
+set_progress(0.25);
+ui_print("Writing Dialing time build.prop Tweaks....");
+set_progress(0.25);
+ui_print("Writing Jpeg quality build.prop Tweaks....");
+set_progress(0.25);
+ui_print("Disabling kernel error checking....");
+set_progress(0.26);
+ui_print("Locking default launcher in memory....");
+set_progress(0.27);
+ui_print("Writing internet speed tweaks....");
+set_progress(0.28);
+ui_print("Writing touchscreen build.prop tweaks....");
+set_progress(0.29);
+ui_print("Writing Dialing time tweaks....");
+ui_print("Allowing assets to be purged....");
+set_progress(0.30);
+ui_print("Writing Scrolling speed build.prop tweaks....");
+ui_print("Writing Video Streaming build.prop tweaks....");
+ui_print("Increasing VM heap size....");
+ui_print("Writing graphics performance tweaks....");
+ui_print("Writing Touchscreen tweaks....");
+ui_print("Making device boot faster....");
+ui_print("Writing Flash-led tweaks....");
+ui_print("Writing Face-Unlock tweaks....");
+set_progress(0.31);
+endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.2") == "1" then
+ui_print("Writing 3G build.prop Tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/3g.sh", "/tmp/3g.sh");
+	set_perm(0, 0, 0777, "/tmp/3g.sh");
+	run_program("/tmp/3g.sh");
+set_progress(0.20);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.3") == "1" then
+ui_print("Writing Battery Saving build.prop Tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/battery_save.sh", "/tmp/battery_save.sh");
+	set_perm(0, 0, 0777, "/tmp/battery_save.sh");
+	run_program("/tmp/battery_save.sh");
+set_progress(0.21);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.4") == "1" then
+ui_print("Writing Camera quality build.prop Tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/camera.sh", "/tmp/camera.sh");
+	set_perm(0, 0, 0777, "/tmp/camera.sh");
+	run_program("/tmp/camera.sh");
+set_progress(0.22);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.5") == "1" then
+ui_print("Writing Wifi connect speed build.prop Tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/connect_speed.sh", "/tmp/connect_speed.sh");
+	set_perm(0, 0, 0777, "/tmp/connect_speed.sh");
+	run_program("/tmp/connect_speed.sh");
+set_progress(0.23);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.6") == "1" then
+ui_print("Writing Dalvik ram build.prop Tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/dalvik_ram.sh", "/tmp/dalvik_ram.sh");
+	set_perm(0, 0, 0777, "/tmp/dalvik_ram.sh");
+	run_program("/tmp/dalvik_ram.sh");
+set_progress(0.24);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.7") == "1" then
+ui_print("Writing Deep-Sleep build.prop Tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/deep_sleep.sh", "/tmp/deep_sleep.sh");
+	set_perm(0, 0, 0777, "/tmp/deep_sleep.sh");
+	run_program("/tmp/deep_sleep.sh");
+set_progress(0.25);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.8") == "1" then
+ui_print("Writing Dialing time build.prop Tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/dial_out.sh", "/tmp/dial_out.sh");
+	set_perm(0, 0, 0777, "/tmp/dial_out.sh");
+	run_program("/tmp/dial_out.sh");
+set_progress(0.26);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.9") == "1" then
+ui_print("Writing Jpeg quality build.prop Tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/jpg_quality.sh", "/tmp/jpg_quality.sh");
+	set_perm(0, 0, 0777, "/tmp/jpg_quality.sh");
+	run_program("/tmp/jpg_quality.sh");
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.10") == "1" then
+ui_print("Disabling kernel error checking....");
+	package_extract_file("aroma/tweaks/build.prop/kernel_error.sh", "/tmp/kernel_error.sh");
+	set_perm(0, 0, 0777, "/tmp/kernel_error.sh");
+	run_program("/tmp/kernel_error.sh");
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.11") == "1" then
+ui_print("Locking default launcher in memory....");
+	package_extract_file("aroma/tweaks/build.prop/lock_launcher.sh", "/tmp/lock_launcher.sh");
+	set_perm(0, 0, 0777, "/tmp/lock_launcher.sh");
+	run_program("/tmp/lock_launcher.sh");
+set_progress(0.27);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.12") == "1" then
+ui_print("Writing internet speed tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/net_speed.sh", "/tmp/net_speed.sh");
+	set_perm(0, 0, 0777, "/tmp/net_speed.sh");
+	run_program("/tmp/net_speed.sh");
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.13") == "1" then
+ui_print("Writing touchscreen build.prop tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/perf_tuning.sh", "/tmp/perf_tuning.sh");
+	set_perm(0, 0, 0777, "/tmp/perf_tuning.sh");
+	run_program("/tmp/perf_tuning.sh");
+set_progress(0.28);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.14") == "1" then
+ui_print("Writing Dialing time tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/prox_sensor.sh", "/tmp/prox_sensor.sh");
+	set_perm(0, 0, 0777, "/tmp/prox_sensor.sh");
+	run_program("/tmp/prox_sensor.sh");
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.15") == "1" then
+ui_print("Allowing assets to be purged....");
+	package_extract_file("aroma/tweaks/build.prop/purge_assets.sh", "/tmp/purge_assets.sh");
+	set_perm(0, 0, 0777, "/tmp/purge_assets.sh");
+	run_program("/tmp/purge_assets.sh");
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.16") == "1" then
+ui_print("Writing Scrolling speed build.prop tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/scrolling.sh", "/tmp/scrolling.sh");
+	set_perm(0, 0, 0777, "/tmp/scrolling.sh");
+	run_program("/tmp/scrolling.sh");
+set_progress(0.29);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.17") == "1" then
+ui_print("Writing Video Streaming build.prop tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/streaming.sh", "/tmp/streaming.sh");
+	set_perm(0, 0, 0777, "/tmp/streaming.sh");
+	run_program("/tmp/streaming.sh");
+set_progress(0.30);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.18") == "1" then
+ui_print("Making device boot faster....");
+	package_extract_file("aroma/tweaks/build.prop/quickpower.sh", "/tmp/quickpower.sh");
+	set_perm(0, 0, 0777, "/tmp/quickpower.sh");
+	run_program("/tmp/quickpower.sh");
+set_progress(0.314);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.19") == "1" then
+ui_print("Writing Flash-led tweaks....");
+	package_extract_file("aroma/tweaks/build.prop/flashled.sh", "/tmp/flashled.sh");
+	set_perm(0, 0, 0777, "/tmp/flashled.sh");
+	run_program("/tmp/flashled.sh");
+set_progress(0.316);
+	endif;
+
+	if file_getprop("/tmp/aroma-data/buildprop.prop","item.0.21") == "1" then
+ui_print("Writing Face-Unlock tweaks....");
+set_progress(0.316);
+	endif;
+
+
+
+ ###############################
+###-- 			     --##
+###--Enable/Disable features --##
+###--                        --##
+ ###############################
+
+ui_print("@Enabling and Disabling Features...");
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.1") == "1" then
+ui_print("Enabling Just-In-Time Compiler for Dalvik VM....");
+	package_extract_file("aroma/tweaks/build.prop/features/dalvik_jit.sh", "/tmp/dalvik_jit.sh");
+	set_perm(0, 0, 0777, "/tmp/dalvik_jit.sh");
+	run_program("/tmp/dalvik_jit.sh");
+set_progress(0.31);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.2") == "1" then
+ui_print("Enabling Video Hardware acceleration and decoding....");
+	package_extract_file("aroma/tweaks/build.prop/features/hw_accelerate.sh", "/tmp/hw_accelerate.sh");
+	set_perm(0, 0, 0777, "/tmp/hw_accelerate.sh");
+	run_program("/tmp/hw_accelerate.sh");
+set_progress(0.32);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.3") == "1" then
+ui_print("Disabling boot animation....");
+	package_extract_file("aroma/tweaks/build.prop/features/no_bootanim.sh", "/tmp/no_bootanim.sh");
+	set_perm(0, 0, 0777, "/tmp/no_bootanim.sh");
+	run_program("/tmp/no_bootanim.sh");
+set_progress(0.33);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.4") == "1" then
+ui_print("Enabling GPU UI-Rendering....");
+	package_extract_file("aroma/tweaks/build.prop/features/gpu_hw.sh", "/tmp/gpu_hw.sh");
+	set_perm(0, 0, 0777, "/tmp/gpu_hw.sh");
+	run_program("/tmp/gpu_hw.sh");
+set_progress(0.34);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.5") == "1" then
+ui_print("Enabling Surface Dithering....");
+	package_extract_file("aroma/tweaks/build.prop/features/dithering.sh", "/tmp/dithering.sh");
+	set_perm(0, 0, 0777, "/tmp/dithering.sh");
+	run_program("/tmp/dithering.sh");
+set_progress(0.35);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.6") == "1" then
+ui_print("Enabling HSUPA....");
+	package_extract_file("aroma/tweaks/build.prop/features/hsupa.sh", "/tmp/hsupa.sh");
+	set_perm(0, 0, 0777, "/tmp/hsupa.sh");
+	run_program("/tmp/hsupa.sh");
+set_progress(0.36);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.7") == "1" then
+ui_print("Disabling adb notification icon....");
+	package_extract_file("aroma/tweaks/build.prop/features/adb_debug.sh", "/tmp/adb_debug.sh");
+	set_perm(0, 0, 0777, "/tmp/adb_debug.sh");
+	run_program("/tmp/adb_debug.sh");
+set_progress(0.37);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.8") == "1" then
+ui_print("Disabling Volume buttons wake....");
+	package_extract_file("aroma/tweaks/build.prop/features/volume_wake.sh", "/tmp/volume_wake.sh");
+	set_perm(0, 0, 0777, "/tmp/volume_wake.sh");
+	run_program("/tmp/volume_wake.sh");
+set_progress(0.38);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.9") == "1" then
+ui_print("Disabling Usage Data sending....");
+	package_extract_file("aroma/tweaks/build.prop/features/usage_data.sh", "/tmp/usage_data.sh");
+	set_perm(0, 0, 0777, "/tmp/usage_data.sh");
+	run_program("/tmp/usage_data.sh");
+set_progress(0.39);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.10") == "1" then
+ui_print("Enabling buttons backlight....");
+	package_extract_file("aroma/tweaks/build.prop/features/button_light.sh", "/tmp/button_light.sh");
+	set_perm(0, 0, 0777, "/tmp/button_light.sh");
+	run_program("/tmp/button_light.sh");
+set_progress(0.40);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.11") == "1" then
+ui_print("Enabling 16bit transparency....");
+	package_extract_file("aroma/tweaks/build.prop/features/16balpha.sh", "/tmp/16b.sh");
+	set_perm(0, 0, 0777, "/tmp/16b.sh");
+	run_program("/tmp/16b.sh");
+set_progress(0.41);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.12") == "1" then
+ui_print("Removing Android logger....");
+	package_extract_file("aroma/tweaks/initd/S82logger", "/system/etc/init.d/S82logger");
+	package_extract_file("aroma/tweaks/initd/S82logger", "/tmp/S82logger.sh");
+	set_perm(0, 0, 0777, "/tmp/S82logger.sh");
+	run_program("/tmp/S82logger.sh");
+set_progress(0.41);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.13") == "1" then
+ui_print("Re-Enabling Android logger....");;
+	package_extract_file("aroma/rm/rm_logger.sh", "/tmp/rm_logger.sh");
+	set_perm(0, 0, 0777, "/tmp/rm_logger.sh");
+	run_program("/tmp/rm_logger.sh");
+set_progress(0.41);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.14") == "1" then
+ui_print("Disabling Normalized Sleeper....");;
+	package_extract_file("aroma/tweaks/initd/S51normsleep", "/system/etc/init.d/S51normsleep");
+	package_extract_file("aroma/tweaks/initd/S51normsleep", "/tmp/normsleep.sh");
+	set_perm(0, 0, 0777, "/tmp/normsleep.sh");
+	run_program("/tmp/normsleep.sh");
+set_progress(0.41);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.15") == "1" then
+ui_print("Disabling Gentle Fair Sleepers....");;
+	package_extract_file("aroma/tweaks/initd/S52gentlefair", "/system/etc/init.d/S52gentlefair");
+	package_extract_file("aroma/tweaks/initd/S52gentlefair", "/tmp/gentlefair.sh");
+	set_perm(0, 0, 0777, "/tmp/gentlefair.sh");
+	run_program("/tmp/gentlefair.sh");
+set_progress(0.41);
+	endif;
+
+if file_getprop("/tmp/aroma-data/feat.prop","item.0.16") == "1" then
+ui_print("Disabling New Fair Sleepers....");;
+	package_extract_file("aroma/tweaks/initd/S53newfair", "/system/etc/init.d/S53newfair");
+	package_extract_file("aroma/tweaks/initd/S53newfair", "/tmp/newfair.sh");
+	set_perm(0, 0, 0777, "/tmp/newfair.sh");
+	run_program("/tmp/newfair.sh");
+set_progress(0.41);
+	endif;
+
+
+
+#############################################################################################
+####################### Multitasking : LMK OOM & Minfree settings ###########################
+#############################################################################################
+
+ui_print("@Multitasking...");
+package_extract_file("aroma/tweaks/lmk/lmk_chmod", "/tmp/lmk_chmod");
+	set_perm(0, 0, 0777, "/tmp/lmk_chmod");
+	run_program("/tmp/lmk_chmod");
+
+# OOM Low
+if file_getprop("/tmp/aroma-data/multi.prop","selected.1") == "1" then
+	ui_print("Multitasking : Setting Low OOM Priorities values...");
+	package_extract_file("aroma/tweaks/lmk/oom/oom_xsoft", "/system/etc/init.d/S94oom");
+	package_extract_file("aroma/tweaks/lmk/oom/oom_xsoft", "/tmp/oom_xsoft");
+	set_perm(0, 0, 0777, "/tmp/oom_xsoft");
+	run_program("/tmp/oom_xsoft");
+	endif;
+
+#OOM Mid
+if file_getprop("/tmp/aroma-data/multi.prop","selected.1") == "2" then
+	ui_print("Multitasking : Setting Medium OOM Priorities values...");
+	package_extract_file("aroma/tweaks/lmk/oom/oom_soft", "/system/etc/init.d/S94oom");
+	package_extract_file("aroma/tweaks/lmk/oom/oom_soft", "/tmp/oom_soft");
+	set_perm(0, 0, 0777, "/tmp/oom_soft");
+	run_program("/tmp/oom_soft");
+	endif;
+
+#OOM High
+if file_getprop("/tmp/aroma-data/multi.prop","selected.1") == "3" then
+	ui_print("Multitasking : Setting High OOM Priorities values...");
+	package_extract_file("aroma/tweaks/lmk/oom/oom_high", "/system/etc/init.d/S94oom");
+	package_extract_file("aroma/tweaks/lmk/oom/oom_high", "/tmp/oom_high");
+	set_perm(0, 0, 0777, "/tmp/oom_high");
+	run_program("/tmp/oom_high");
+	endif;
+
+#OOM Very High
+if file_getprop("/tmp/aroma-data/multi.prop","selected.1") == "4" then
+	ui_print("Multitasking : Setting Extreme OOM Priorities values...");
+	package_extract_file("aroma/tweaks/lmk/oom/oom_xhigh", "/system/etc/init.d/S94oom");
+	package_extract_file("aroma/tweaks/lmk/oom/oom_xhigh", "/tmp/oom_xhigh");
+	set_perm(0, 0, 0777, "/tmp/oom_xhigh");
+	run_program("/tmp/oom_xhigh");
+	endif;
+
+set_progress(0.42);
+######################
+
+
+#Minfree Low
+if file_getprop("/tmp/aroma-data/multi.prop","selected.2") == "1" then
+	ui_print("Multitasking : Setting Low Minfree values...");
+	package_extract_file("aroma/tweaks/lmk/minfree/minfree_soft", "/system/etc/init.d/S93minfree");
+	package_extract_file("aroma/tweaks/lmk/minfree/minfree_soft", "/tmp/minfreelo");
+	set_perm(0, 0, 0777, "/tmp/minfreelo");
+	run_program("/tmp/minfreelo");
+	endif;
+
+#Minfree Mid
+if file_getprop("/tmp/aroma-data/multi.prop","selected.2") == "2" then
+	ui_print("Multitasking : Setting Medium Minfree values...");
+	package_extract_file("aroma/tweaks/lmk/minfree/minfree_xsoft", "/system/etc/init.d/S93minfree");
+	package_extract_file("aroma/tweaks/lmk/minfree/minfree_xsoft", "/tmp/minfreemid");
+	set_perm(0, 0, 0777, "/tmp/minfreemid");
+	run_program("/tmp/minfreemid");
+	endif;
+
+#Minfree high
+if file_getprop("/tmp/aroma-data/multi.prop","selected.2") == "3" then
+	ui_print("Multitasking : Setting High Minfree values...");
+	package_extract_file("aroma/tweaks/lmk/minfree/minfree_high", "/system/etc/init.d/S93minfree");
+	package_extract_file("aroma/tweaks/lmk/minfree/minfree_high", "/tmp/minfreehi");
+	set_perm(0, 0, 0777, "/tmp/minfreehi");
+	run_program("/tmp/minfreehi");
+	endif;
+
+#Minfree extreme
+if file_getprop("/tmp/aroma-data/multi.prop","selected.2") == "4" then
+	ui_print("Multitasking : Setting Extreme Minfree values...");
+	package_extract_file("aroma/tweaks/lmk/minfree/minfree_xhigh", "/system/etc/init.d/S93minfree");
+	package_extract_file("aroma/tweaks/lmk/minfree/minfree_xhigh", "/tmp/minfreexhi");
+	set_perm(0, 0, 0777, "/tmp/minfreexhi");
+	run_program("/tmp/minfreexhi");
+	endif;
+
+set_progress(0.43);
+#####################
+ui_print("@ZRAM...");
+
+#Zram 64mb
+if file_getprop("/tmp/aroma-data/multi.prop","selected.3") == "1" then
+	ui_print("Multitasking : Setting ZRAM to 64mb...");
+	package_extract_file("aroma/tweaks/lmk/zram/zram64", "/system/etc/init.d/S90zram");
+	package_extract_file("aroma/tweaks/lmk/zram/zram64", "/tmp/zram64");
+	package_extract_file("aroma/tweaks/lmk/zram/chmod64", "/tmp/chmod64.sh");
+	set_perm(0, 0, 0777, "/tmp/zram64");
+	set_perm(0, 0, 0777, "/tmp/chmod64.sh");
+	run_program("/tmp/zram64");
+	run_program("/tmp/chmod64.sh");
+	endif;
+
+#Zram 128mb
+if file_getprop("/tmp/aroma-data/multi.prop","selected.3") == "2" then
+	ui_print("@Multitasking : Setting ZRAM to 128mb...");
+	package_extract_file("aroma/tweaks/lmk/zram/zram128", "/system/etc/init.d/S90zram");
+	package_extract_file("aroma/tweaks/lmk/zram/zram128", "/tmp/zram128");
+	package_extract_file("aroma/tweaks/lmk/zram/chmod128", "/tmp/chmod128");
+	set_perm(0, 0, 0777, "/tmp/zram128");
+	set_perm(0, 0, 0777, "/tmp/chmod128");
+	run_program("/tmp/zram128");
+	run_program("/tmp/chmod128");
+	endif;
+
+set_progress(0.44);
+#############################################
+ui_print("@sysctl multitasking tweaks...");
+
+
+#sysctl kernel
+if file_getprop("/tmp/aroma-data/multi.prop","selected.4") == "1" then
+	ui_print("@Tweaking kernel's stability on high memory-consumption conditions...");
+	package_extract_file("aroma/tweaks/lmk/sysctl/S29sysctl_kernel", "/system/etc/init.d/S29sysctl_kernel");
+	package_extract_file("aroma/tweaks/lmk/sysctl/S29sysctl_kernel", "/tmp/sysctl_kernel.sh");
+	set_perm(0, 0, 0777, "/tmp/sysctl_kernel.sh");
+	run_program("/tmp/sysctl_kernel.sh");
+	endif;
+
+#sysctl dalvik
+if file_getprop("/tmp/aroma-data/multi.prop","selected.5") == "1" then
+	ui_print("@Tweaking Dalvik VM's handling of high multitasking conditions...");
+	package_extract_file("aroma/tweaks/lmk/sysctl/S30sysctl_vm", "/system/etc/init.d/S30sysctl_vm");
+	package_extract_file("aroma/tweaks/lmk/sysctl/S30sysctl_vm", "/tmp/sysctl_vm.sh");
+	set_perm(0, 0, 0777, "/tmp/sysctl_vm.sh");
+	run_program("/tmp/sysctl_vm.sh");
+	endif;
+
+set_progress(0.45);
+
+
+############################################
+#                                          #
+#          Networks & Internet             #
+#                                          #
+############################################
+ui_print("@Networks & Internet");
+
+
+### --- Security
+
+# SYN attacks
+if file_getprop("/tmp/aroma-data/sysctlnet.prop","item.1.1") == "1" then
+	ui_print("Network Security : Reinforcing TCP/IP Stack to resist SYN attacks and DoS....");
+	package_extract_file("aroma/tweaks/sysctlnet/S64sysctl_tcpsyn", "/system/etc/init.d/S64sysctl_tcpsyn");
+	package_extract_file("aroma/tweaks/sysctlnet/S64sysctl_tcpsyn", "/tmp/sysctl_tcpsyn.sh");
+	set_perm(0, 0, 0777, "/tmp/sysctl_tcpsyn.sh");
+	run_program("/tmp/sysctl_tcpsyn.sh");
+	endif;
+
+# No Redirects
+if file_getprop("/tmp/aroma-data/sysctlnet.prop","item.1.2") == "1" then
+	ui_print("Internet Security : Blocking redirects...");
+	package_extract_file("aroma/tweaks/sysctlnet/S65redirects", "/system/etc/init.d/S65redirects");
+	package_extract_file("aroma/tweaks/sysctlnet/S65redirects", "/tmp/redirects.sh");
+	set_perm(0, 0, 0777, "/tmp/redirects.sh");
+	run_program("/tmp/redirects.sh");
+	endif;
+
+# No Source-route
+if file_getprop("/tmp/aroma-data/sysctlnet.prop","item.1.3") == "1" then
+	ui_print("Internet Security : Blocking Source-Routing....");
+	package_extract_file("aroma/tweaks/sysctlnet/S66routing", "/system/etc/init.d/S66routing");
+	package_extract_file("aroma/tweaks/sysctlnet/S66routing", "/tmp/routing.sh");
+	set_perm(0, 0, 0777, "/tmp/routing.sh");
+	run_program("/tmp/routing.sh");
+	endif;
+set_progress(0.46);
+
+
+### --- Stability & Speed
+
+# Buffer & Queue size
+if file_getprop("/tmp/aroma-data/sysctlnet.prop","item.2.1") == "1" then
+	ui_print("Stability : increasing queue and buffer size of TCP sockets...");
+	package_extract_file("aroma/tweaks/sysctlnet/S61sysctl_queue", "/system/etc/init.d/S61sysctl_queue");
+	package_extract_file("aroma/tweaks/sysctlnet/S61sysctl_queue", "/tmp/sysctl_queue.sh");
+	set_perm(0, 0, 0777, "/tmp/sysctl_queue.sh");
+	run_program("/tmp/sysctl_queue.sh");
+	endif;
+
+# Re-use TIME-WAIT sockets
+if file_getprop("/tmp/aroma-data/sysctlnet.prop","item.2.2") == "1" then
+	ui_print("Stability : Allowing system to re-use sockets in TIME-WAIT state....");
+	package_extract_file("aroma/tweaks/sysctlnet/S63sysctl_timewait", "/system/etc/init.d/S63sysctl_timewait");
+	package_extract_file("aroma/tweaks/sysctlnet/S63sysctl_timewait", "/tmp/sysctl_timewait.sh");
+	set_perm(0, 0, 0777, "/tmp/sysctl_timewait.sh");
+	run_program("/tmp/sysctl_timewait.sh");
+	endif;
+
+# IPv4 misc
+if file_getprop("/tmp/aroma-data/sysctlnet.prop","item.2.3") == "1" then
+	ui_print("Speed : Using sysctl to tweak ipv4 protocol behaviour....");
+	package_extract_file("aroma/tweaks/sysctlnet/S62sysctl_ipv4", "/system/etc/init.d/S62sysctl_ipv4");
+	package_extract_file("aroma/tweaks/sysctlnet/S62sysctl_ipv4", "/tmp/sysctl_ipv4.sh");
+	set_perm(0, 0, 0777, "/tmp/sysctl_ipv4.sh");
+	run_program("/tmp/sysctl_ipv4.sh");
+	endif;
+
+# DNS+ppp0 tweaks
+if file_getprop("/tmp/aroma-data/sysctlnet.prop","item.2.4") == "1" then
+	ui_print("Speed : Applying dns & ppp0 tweaks....");
+	package_extract_file("aroma/tweaks/sysctlnet/dns_ppp", "/tmp/dnsppp.sh");
+	set_perm(0, 0, 0777, "/tmp/dnsppp.sh");
+	run_program("/tmp/dnsppp.sh");
+	endif;
+set_progress(0.47);
+
+
+
+############################################
+#                                          #
+#    GPS.conf files for most countries     #
+#                                          #
+############################################
+ui_print("@GPS Configuration...");
+
+#Angola
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "1" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Angola/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Argentina
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "2" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Argentina/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Australia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "3" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Australia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Austria
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "4" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Austria/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Bangladesh
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "5" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Bangladesh/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Belarus
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "6" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Belarus/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Belgium
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "7" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Belgium/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Bosnia & Herzegovina
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "8" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Bosnia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Brazil
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "9" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Brazil/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Bulgaria
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "10" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Bulgaria/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Cambodia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "11" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Cambodia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Canada
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "12" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Canada/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Chile
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "13" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Chile/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#China
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "14" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/China/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Costa Rica
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "15" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Costa-Rica/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Croatia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "16" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Croatia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Czech Republic
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "17" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Czech-Republic/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Denmark
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "18" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Denmark/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#El Salvador
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "19" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Salvador/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Estonia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "20" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Estonia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Finland
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "21" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Finland/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#France
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "22" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/France/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Germany
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "23" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Germany/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Greece
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "24" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Greece/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Guatemala
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "25" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Guatemala/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Hong Kong
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "26" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Hong-Kong/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Hungary
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "27" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Hungary/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#India
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "28" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/India/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Indonesia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "29" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Indonesia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Iran
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "30" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Iran/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Ireland
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "31" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Ireland/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Israel
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "32" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Israel/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Italy
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "33" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Italy/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Japan
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "34" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Japan/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Korea
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "35" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Korea/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Kyrgyzstan
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "36" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Kyrgyzstan/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Latvia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "37" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Latvia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Lithuania
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "38" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Lithuania/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Luxembourg
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "39" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Luxembourg/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Macedonia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "40" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Macedonia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Madagascar
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "41" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Madagascar/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Malaysia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "42" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Malaysia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Mexico
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "43" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Mexico/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Moldova
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "44" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Moldova/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Netherlands
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "45" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Netherlands/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#New Caledonia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "46" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/New-Caledonia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#New Zealand
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "47" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/New Zealand/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Norway
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "48" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Norway/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Oman
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "49" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Oman/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Pakistan
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "50" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Pakistan/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Panama
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "51" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Panama/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Philippines
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "52" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Philippines/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Poland
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "53" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Poland/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Portugal
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "54" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Portugal/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Qatar
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "55" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Qatar/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Republic of Serbia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "56" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Serbia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Romania
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "57" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Romania/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Russian Federation
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "58" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Russia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Saudi Arabia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "59" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Saudi-Arabia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Singapore
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "60" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Singapore/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Slovakia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "61" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Slovakia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Slovenia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "62" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Slovenia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#South Africa
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "63" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/South-Africa/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Spain
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "64" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Spain/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Sri Lanka
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "65" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Srilanka/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Sweden
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "66" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Sweden/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Switzerland
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "67" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Switzerland/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Taiwan
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "68" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Taiwan/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Tanzania
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "69" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Tanzania/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Thailand
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "70" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Thailand/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Turkey
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "71" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Turkey/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Ukraine
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "72" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Ukraine/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#United Arab Emirates
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "73" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/United-Arab-Emirates/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#United Kingdom
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "74" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/United-Kingdom/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#United States of America
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "75" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/United-States/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Uzbekistan
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "76" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Uzbekistan/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Venezuela
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "77" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Venezuela/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Vietnam
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "78" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Vietnam/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Yugoslavia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.1") == "79" then
+ui_print("Updating your gps.conf to match your country....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/Yugoslavia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+### Continents
+
+#Africa
+if file_getprop("/tmp/aroma-data/gps.prop","selected.2") == "1" then
+ui_print("@Updating your gps.conf to match your continent....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/1.CONTINENTS/Africa/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Asia
+if file_getprop("/tmp/aroma-data/gps.prop","selected.2") == "1" then
+ui_print("@Updating your gps.conf to match your continent....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/1.CONTINENTS/Asia/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Europe
+if file_getprop("/tmp/aroma-data/gps.prop","selected.2") == "1" then
+ui_print("@Updating your gps.conf to match your continent....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/1.CONTINENTS/Europe/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#North America
+if file_getprop("/tmp/aroma-data/gps.prop","selected.2") == "1" then
+ui_print("@Updating your gps.conf to match your continent....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/1.CONTINENTS/North-America/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#Oceania
+if file_getprop("/tmp/aroma-data/gps.prop","selected.2") == "1" then
+ui_print("@Updating your gps.conf to match your continent....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/1.CONTINENTS/Oceania/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+
+#South America
+if file_getprop("/tmp/aroma-data/gps.prop","selected.2") == "1" then
+ui_print("@Updating your gps.conf to match your continent....");
+ui_print("Deleting old configuration...");
+delete("/system/etc/gps.conf");
+ui_print("Copying new config...");
+package_extract_dir("aroma/gpsconf/1.CONTINENTS/South-America/system", "/system");
+ui_print("gps.conf file updated, the gps is now more accurate and locks faster...");
+endif;
+set_progress(0.48);
+
+#
+### Custom Apps
+#
+#
+
+if
+  file_getprop("/tmp/aroma-data/apps.prop","item.1.1") == "1"
+then
+  ui_print("@ Installing Apex Launcher...");
+  package_extract_file("apps/ApexLauncher.apk", "/data/app/ApexLauncher.apk");
+endif;
+set_progress(0.49);
+
+if
+  file_getprop("/tmp/aroma-data/apps.prop","item.1.2") == "1"
+then
+  ui_print("@ Installing Nova Launcher...");
+  package_extract_file("apps/NovaLauncher.apk", "/data/app/NovaLauncher.apk");
+endif;
+set_progress(0.50);
+
+if
+  file_getprop("/tmp/aroma-data/apps.prop","item.2.1") == "1"
+then
+  ui_print("@ Installing Solid Explorer...");
+  package_extract_file("apps/pl.solidexplorer-25-1.3.6.apk", "/data/app/pl.solidexplorer-25-1.3.6.apk");
+  ui_print("Allowing Writes to Complete, Please Wait....");
+  show_progress(0.2, "-2000");
+endif;
+set_progress(0.51);
+
+if
+  file_getprop("/tmp/aroma-data/apps.prop","item.2.2") == "1"
+then
+  ui_print("@ Installing Rom Toolbox Lite...");
+  package_extract_file("apps/com.jrummy.liberty.toolbox-1.apk", "/data/app/com.jrummy.liberty.toolbox-1.apk");
+  ui_print("Allowing Writes to Complete, Please Wait....");
+  show_progress(0.2, "-2000");
+endif;
+set_progress(0.53);
+
+if
+  file_getprop("/tmp/aroma-data/apps.prop","item.2.3") == "1"
+then
+  ui_print("@ Installing Adobe Flash Player...");
+  package_extract_file("apps/com.adobe.flashplayer-1.apk", "/data/app/com.adobe.flashplayer-1.apk");
+  ui_print("Allowing Writes to Complete, Please Wait....");
+  show_progress(0.2, "-2000");
+endif;
+set_progress(0.59);
+
+if
+  file_getprop("/tmp/aroma-data/apps.prop","item.2.4") == "1"
+then
+  ui_print("@ Installing Script Manager...");
+  package_extract_file("apps/os.tools.scriptmanager-77-2.5.3.1.apk", "/data/app/os.tools.scriptmanager-77-2.5.3.1.apk");
+  ui_print("Allowing Writes to Complete, Please Wait....");
+  show_progress(0.2, "-2000");
+endif;
+set_progress(0.63);
+
+if
+  file_getprop("/tmp/aroma-data/apps.prop","item.2.5") == "1"
+then
+  ui_print("@ Installing Hulu+ in Portrait Layout...");
+  package_extract_file("apps/Mod2com.hulu.plus-2.apk", "/data/app/Mod2com.hulu.plus-2.apk");
+  ui_print("Allowing Writes to Complete, Please Wait....");
+  show_progress(0.2, "-2000");
+endif;
+set_progress(0.65);
+
+if
+  file_getprop("/tmp/aroma-data/apps.prop","item.2.6") == "1"
+then
+  ui_print("@ Installing Hulu+ in Landscape Layout...");
+  package_extract_file("apps/LandscapeModHuluPlus.apk", "/data/app/LandscapeModHuluPlus.apk");
+  ui_print("Allowing Writes to Complete, Please Wait....");
+  show_progress(0.2, "-2000");
+endif;
+set_progress(0.68);
+
+if
+  file_getprop("/tmp/aroma-data/apps.prop","item.2.7") == "1"
+then
+  ui_print("@ Installing Smart Stay EX...");
+  package_extract_file("apps/com.beansoft.eyespy.free-30-v1.3.4.3.apk", "/data/app/com.beansoft.eyespy.free-30-v1.3.4.3.apk");
+  ui_print("Allowing Writes to Complete, Please Wait....");
+  show_progress(0.2, "-2000");
+endif;
+set_progress(0.68);
+
+
+######################### Extra Features ####################################
+  ui_print("@Extra Features");
+#ics
+
+if file_getprop("/tmp/aroma-data/baserom.prop","selected.1") == "2" then
+########################
+
+
+
+if file_getprop("/tmp/aroma-data/themes.prop","item.0.1") == "1" then
+ui_print("Installing OpenVPN support....");
+package_extract_dir("aroma/tweaks/openvpn", "/system");
+	symlink("/system/xbin/ifconfig","/system/xbin/bb/ifconfig");
+	symlink("/system/xbin/route","/system/xbin/bb/route");
+	set_perm(1000, 1000, 0755, "/system/xbin/openvpn");
+        endif;
+
+if file_getprop("/tmp/aroma-data/themes.prop","item.0.2") == "1" then
+ui_print("Installing Awesome Beats Audio....");
+ui_print("Deleting DSP Manager...");
+delete("/system/app/DSPManager.apk");
+ui_print("Copying new Files...");
+package_extract_dir("aroma/tweaks/beats", "/system");
+ui_print("");
+endif;
+
+if file_getprop("/tmp/aroma-data/themes.prop","item.0.3") == "1" then
+ui_print("Installing Adrenaline Boost scripts....");
+package_extract_file("aroma/tweaks/adrenaline/boost", "/system/bin/boost");
+endif;
+
+if file_getprop("/tmp/aroma-data/themes.prop","item.0.4") == "1" then
+ui_print("Installing Sony Walkman suite : Music Player, Visualizer, ClearBass & Image Gallery/Editor....");
+package_extract_dir("aroma/walkman/system", "/system");
+package_extract_dir("aroma/walkman/data", "/data/app");
+endif;
+
+if file_getprop("/tmp/aroma-data/themes.prop","item.0.5") == "1" then
+ui_print("Generating Adblock hosts file....");
+package_extract_dir("aroma/tweaks/Adblock", "/system");
+endif;
+
+
+######
+endif;
+
+
+#jb
+if file_getprop("/tmp/aroma-data/baserom.prop","selected.1") == "1" then
+###################################
+
+if file_getprop("/tmp/aroma-data/themesjb.prop","item.0.1") == "1" then
+ui_print("Installing OpenVPN support....");
+package_extract_dir("aroma/tweaks/openvpn", "/system");
+	symlink("/system/xbin/ifconfig","/system/xbin/bb/ifconfig");
+	symlink("/system/xbin/route","/system/xbin/bb/route");
+	set_perm(1000, 1000, 0755, "/system/xbin/openvpn");
+        endif;
+
+if file_getprop("/tmp/aroma-data/themesjb.prop","item.0.2") == "1" then
+ui_print("Installing Awesome Beats Audio....");
+ui_print("Deleting DSP Manager...");
+delete("/system/app/DSPManager.apk");
+ui_print("");
+ui_print("Copying new Files...");
+package_extract_dir("aroma/tweaks/beats", "/system");
+ui_print("");
+endif;
+
+if file_getprop("/tmp/aroma-data/themesjb.prop","item.0.3") == "1" then
+ui_print("Installing Adrenaline Boost scripts....");
+package_extract_file("aroma/tweaks/adrenaline/boost", "/system/bin/boost");
+endif;
+
+if file_getprop("/tmp/aroma-data/themesjb.prop","item.0.4") == "1" then
+ui_print("Installing Sony Walkman suite : Music Player, Visualizer, ClearBass & Image Gallery/Editor....");
+package_extract_dir("aroma/walkman/system", "/system");
+package_extract_dir("aroma/walkman/data", "/data/app");
+endif;
+
+if file_getprop("/tmp/aroma-data/themesjb.prop","item.0.5") == "1" then
+ui_print("Generating Adblock hosts file....");
+package_extract_dir("aroma/tweaks/Adblock", "/system");
+endif;
+
+
+######
+endif;
+
+#gb
+
+if file_getprop("/tmp/aroma-data/baserom.prop","selected.1") == "3" then
+###################################
+
+if file_getprop("/tmp/aroma-data/themestock.prop","item.0.1") == "1" then
+ui_print("@Installing OpenVPN support....");
+package_extract_dir("aroma/tweaks/openvpn", "/system");
+	symlink("/system/xbin/ifconfig","/system/xbin/bb/ifconfig");
+	symlink("/system/xbin/route","/system/xbin/bb/route");
+	set_perm(1000, 1000, 0755, "/system/xbin/openvpn");
+        endif;         
+
+if file_getprop("/tmp/aroma-data/themestock.prop","item.0.2") == "1" then
+ui_print("@Installing Awesome Beats Audio....");
+ui_print("Deleting DSP Manager...");
+delete("/system/app/DSPManager.apk");
+ui_print("");
+ui_print("Copying new Files...");
+package_extract_dir("aroma/tweaks/beats", "/system");
+ui_print("");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestock.prop","item.0.3") == "1" then
+ui_print("@Installing Adrenaline Boost scripts....");
+package_extract_file("aroma/tweaks/adrenaline/boost", "/system/bin/boost");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestock.prop","item.0.4") == "1" then
+ui_print("@Installing Sony Walkman suite : Music Player, Visualizer, ClearBass & Image Gallery/Editor....");
+package_extract_dir("aroma/walkman/system", "/system");
+package_extract_dir("aroma/walkman/data", "/data/app");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestock.prop","item.0.5") == "1" then
+ui_print("Generating Adblock hosts file....");
+package_extract_dir("aroma/tweaks/Adblock", "/system");
+endif;
+
+
+#####
+endif;
+
+
+##-- Stock extra features
+
+#ics 
+
+if file_getprop("/tmp/aroma-data/baserom.prop","selected.2") == "2" then
+###################################
+
+if file_getprop("/tmp/aroma-data/themestockics.prop","item.0.1") == "1" then
+ui_print("@Installing OpenVPN support....");
+package_extract_dir("aroma/tweaks/openvpn", "/system");
+	symlink("/system/xbin/ifconfig","/system/xbin/bb/ifconfig");
+	symlink("/system/xbin/route","/system/xbin/bb/route");
+	set_perm(1000, 1000, 0755, "/system/xbin/openvpn");
+        endif;         
+
+if file_getprop("/tmp/aroma-data/themestockics.prop","item.0.2") == "1" then
+ui_print("@Installing Awesome Beats Audio....");
+ui_print("Deleting DSP Manager...");
+delete("/system/app/DSPManager.apk");
+ui_print("");
+ui_print("Copying new Files...");
+package_extract_dir("aroma/tweaks/beats", "/system");
+ui_print("");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestockics.prop","item.0.3") == "1" then
+ui_print("@Installing Adrenaline Boost scripts....");
+package_extract_file("aroma/tweaks/adrenaline/boost", "/system/bin/boost");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestockics.prop","item.0.4") == "1" then
+ui_print("@Installing Sony Walkman suite : Music Player, Visualizer, ClearBass & Image Gallery/Editor....");
+package_extract_dir("aroma/walkman/system", "/system");
+package_extract_dir("aroma/walkman/data", "/data/app");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestockics.prop","item.0.5") == "1" then
+ui_print("Generating Adblock hosts file....");
+package_extract_dir("aroma/tweaks/Adblock", "/system");
+endif;
+
+
+######
+endif;
+
+
+#jb
+
+if file_getprop("/tmp/aroma-data/baserom.prop","selected.2") == "1" then
+###################################
+
+if file_getprop("/tmp/aroma-data/themestockjb.prop","item.0.1") == "1" then
+ui_print("@Installing OpenVPN support....");
+package_extract_dir("aroma/tweaks/openvpn", "/system");
+	symlink("/system/xbin/ifconfig","/system/xbin/bb/ifconfig");
+	symlink("/system/xbin/route","/system/xbin/bb/route");
+	set_perm(1000, 1000, 0755, "/system/xbin/openvpn");
+        endif;         
+
+if file_getprop("/tmp/aroma-data/themestockjb.prop","item.0.2") == "1" then
+ui_print("@Installing Awesome Beats Audio....");
+ui_print("Deleting DSP Manager...");
+delete("/system/app/DSPManager.apk");
+ui_print("");
+ui_print("Copying new Files...");
+package_extract_dir("aroma/tweaks/beats", "/system");
+ui_print("");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestockjb.prop","item.0.3") == "1" then
+ui_print("@Installing Adrenaline Boost scripts....");
+package_extract_file("aroma/tweaks/adrenaline/boost", "/system/bin/boost");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestockjb.prop","item.0.4") == "1" then
+ui_print("@Installing Sony Walkman suite : Music Player, Visualizer, ClearBass & Image Gallery/Editor....");
+package_extract_dir("aroma/walkman/system", "/system");
+package_extract_dir("aroma/walkman/data", "/data/app");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestockjb.prop","item.0.5") == "1" then
+ui_print("Generating Adblock hosts file....");
+package_extract_dir("aroma/tweaks/Adblock", "/system");
+endif;
+
+######
+endif;
+
+
+
+# gb
+
+if file_getprop("/tmp/aroma-data/baserom.prop","selected.2") == "3" then
+###################################
+
+if file_getprop("/tmp/aroma-data/themestock.prop","item.0.1") == "1" then
+ui_print("@Installing OpenVPN support....");
+package_extract_dir("aroma/tweaks/openvpn", "/system");
+	symlink("/system/xbin/ifconfig","/system/xbin/bb/ifconfig");
+	symlink("/system/xbin/route","/system/xbin/bb/route");
+	set_perm(1000, 1000, 0755, "/system/xbin/openvpn");
+        endif;         
+
+if file_getprop("/tmp/aroma-data/themestock.prop","item.0.2") == "1" then
+ui_print("@Installing Awesome Beats Audio....");
+ui_print("Deleting DSP Manager...");
+delete("/system/app/DSPManager.apk");
+ui_print("");
+ui_print("Copying new Files...");
+package_extract_dir("aroma/tweaks/beats", "/system");
+ui_print("");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestock.prop","item.0.3") == "1" then
+ui_print("@Installing Adrenaline Boost scripts....");
+package_extract_file("aroma/tweaks/adrenaline/boost", "/system/bin/boost");
+endif;
+
+if file_getprop("/tmp/aroma-data/themestock.prop","item.0.4") == "1" then
+ui_print("@Installing Sony Walkman suite : Music Player, Visualizer, ClearBass & Image Gallery/Editor....");
+package_extract_dir("aroma/walkman/system", "/system");
+package_extract_dir("aroma/walkman/data", "/data/app");
+endif;
+
+######
+endif;
+
+
+
+
+#-- Fix permissions
+ui_print("Fixing Permissions...");
+package_extract_file("fix_permissions", "/tmp/fix_permissions");
+set_perm(0, 0, 0777, "/tmp/fix_permissions");
+
+ui_print("@ Pimp My Rom is checking if all the pimpin' went right, please stand by....");
+show_progress(0.10, "-20000");
+run_program("/tmp/aroma/sleep","20000");
+
+ui_print("@ Unmounting /data and /system");
+unmount("/data");
+unmount("/system");
+set_progress(0.99);
+#-- Finish
+ui_print(" ");
+ui_print("@Finished, enjoy your freshly Pimped rom !");
+set_progress(1);
+
+########## END OF AROMA INSTALLER CODE ##########

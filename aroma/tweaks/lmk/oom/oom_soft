@@ -1,0 +1,22 @@
+#!/system/bin/sh
+sed -i 's:#OOM (Out-Of-Memory) Groupings' /system/build.prop
+sed -i 's:FAM1=2048:ro.FOREGROUND_APP_MEM=6400:g' /system/build.prop
+sed -i 's:VAM1=3584:ro.VISIBLE_APP_MEM=8960:g' /system/build.prop
+sed -i 's:SAM1=19200:ro.SECONDARY_SERVER_MEM=14080:g' /system/build.prop
+sed -i 's:BAM1=23040:ro.BACKUP_APP_MEM=17920:g' /system/build.prop
+sed -i 's:HAM1=1024:ro.HOME_APP_MEM=3200:g' /system/build.prop
+sed -i 's:HIAM1=23040:ro.HIDDEN_APP_MEM=17920:g' /system/build.prop
+sed -i 's:EAM1=32000:ro.EMPTY_APP_MEM=64000:g' /system/build.prop
+sed -i 's:PAM1=1024:ro.PERCEPTIBLE_APP_MEM=3200:g' /system/build.prop
+sed -i 's:HWAM1=19200:ro.HEAVY_WEIGHT_APP_MEM=14080:g' /system/build.prop
+sed -i 's:CPM1=24320:ro.CONTENT_PROVIDER_MEM=38400:g' /system/build.prop
+sed -i 's:FAJ1=8:ro.FOREGROUND_APP_ADJ=25:g' /system/build.prop
+sed -i 's:VAJ1=14:ro.VISIBLE_APP_ADJ=35:g' /system/build.prop
+sed -i 's:SAJ1=75:ro.SECONDARY_SERVER_ADJ=55:g' /system/build.prop
+sed -i 's:BAJ1=76:ro.BACKUP_APP_ADJ=56:g' /system/build.prop
+sed -i 's:HAJ1=9:ro.HOME_APP_ADJ=26:g' /system/build.prop
+sed -i 's:HAMJ1=89:ro.EMPTY_APP_ADJ=69:g' /system/build.prop
+sed -i 's:EAJ1=125:ro.HIDDEN_APP_MIN_ADJ=250:g' /system/build.prop
+sed -i 's:PAJ1=10:ro.PERCEPTIBLE_APP_ADJ=27:g' /system/build.prop
+sed -i 's:HWAJ1=15:ro.HEAVY_WEIGHT_APP_ADJ=36:g' /system/build.prop
+sed -i 's:CPJ1=90:ro.CONTENT_PROVIDER_ADJ=70:g' /system/build.prop

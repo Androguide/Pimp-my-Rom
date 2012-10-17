@@ -1,0 +1,7 @@
+#!/system/bin/sh
+chmod 777 system/etc/init.d/S07kernel
+
+echo "8" > /proc/sys/vm/page-cluster;
+echo "64000" > /proc/sys/kernel/msgmni;
+echo "64000" > /proc/sys/kernel/msgmax;
+echo "500,512000,64,2048" > /proc/sys/kernel/sem;

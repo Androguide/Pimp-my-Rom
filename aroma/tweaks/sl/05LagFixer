@@ -1,0 +1,14 @@
+#!/system/bin/sh
+
+if [ -e /proc/sys/vm/swappiness ]; then
+	echo "0" > /proc/sys/vm/swappiness
+fi
+
+if [ -e /proc/sys/vm/vfs_cache_pressure ]; then
+	echo "50" > /proc/sys/vm/vfs_cache_pressure
+fi
+
+if [ -e /proc/sys/vm/dirty_expire_centisecs ]; then
+	echo "3000" > /proc/sys/vm/dirty_expire_centisecs
+fi
+

@@ -1,0 +1,5 @@
+#!/system/bin/sh
+
+busybox mount -o bind /cache/dalvik-cache /data/dalvik-cache
+busybox chown 1000:1000 /data/dalvik-cache
+busybox chmod 0771 /data/dalvik-cache

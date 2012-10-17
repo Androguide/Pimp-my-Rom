@@ -1,0 +1,7 @@
+#!/system/bin/sh
+chmod -R 777 /sys/module/lowmemorykiller/parameters/minfree
+chmod -R 777 /sys/module/lowmemorykiller/parameters/adj
+echo "$adjust_1" > /sys/module/lowmemorykiller/parameters/adj;
+echo "$minf_1" > /sys/module/lowmemorykiller/parameters/minfree;
+chmod -R 444 /sys/module/lowmemorykiller/parameters/minfree
+chmod -R 444 /sys/module/lowmemorykiller/parameters/adj

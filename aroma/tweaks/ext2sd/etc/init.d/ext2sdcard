@@ -1,0 +1,4 @@
+#!/system/bin/sh
+su
+mount -t vfat -o umask=0000 /dev/block/vold/179:9 /storage/sdcard0
+mount -o bind /data/media /storage/sdcard1

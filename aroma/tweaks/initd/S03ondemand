@@ -1,0 +1,35 @@
+#!/system/bin/sh
+############################################
+## Ondemand values tweaking - Pimp My Rom ##
+############################################
+
+chmod 777 system/etc/init.d/S03ondemand
+
+if [ -e /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold ]; then
+		chmod -R 777 /sys/devices/system/cpu/cpufreq/ondemand
+		echo "95" > /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold;
+		echo "5" > /sys/devices/system/cpu/cpu0/cpufreq/ondemand/down_differential;
+		echo "1" > /sys/devices/system/cpu/cpu0/cpufreq/ondemand/io_is_busy;
+		echo "1" > /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_down_factor;
+		echo "120000" > /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate;
+		chmod -R 444 /sys/devices/system/cpu/cpufreq/ondemand
+	fi;		
+	if [ -e /sys/devices/system/cpu/cpu1/cpufreq/ondemand/up_threshold ]; then
+		chmod -R 777 /sys/devices/system/cpu/cpufreq/ondemand
+		echo "95" > /sys/devices/system/cpu/cpu1/cpufreq/ondemand/up_threshold;
+		echo "5" > /sys/devices/system/cpu/cpu1/cpufreq/ondemand/down_differential;
+		echo "1" > /sys/devices/system/cpu/cpu1/cpufreq/ondemand/io_is_busy;
+		echo "1" > /sys/devices/system/cpu/cpu1/cpufreq/ondemand/sampling_down_factor;
+		echo "120000" > /sys/devices/system/cpu/cpu1/cpufreq/ondemand/sampling_rate;
+		chmod -R 444 /sys/devices/system/cpu/cpufreq/ondemand
+	fi;
+	if [ -e /sys/devices/system/cpu/cpufreq/ondemand/up_threshold ]; then
+		chmod -R 777 /sys/devices/system/cpu/cpufreq/ondemand
+		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy;
+		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		chmod -R 444 /sys/devices/system/cpu/cpufreq/ondemand
+	fi;
+

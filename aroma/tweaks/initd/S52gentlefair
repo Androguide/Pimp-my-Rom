@@ -1,0 +1,5 @@
+#!/system/bin/sh
+
+chmod -R 777 /sys/kernel/debug/sched_features
+echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features;
+chmod -R 444 /sys/kernel/debug/sched_features

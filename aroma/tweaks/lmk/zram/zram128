@@ -1,0 +1,8 @@
+#!/system/bin/sh
+
+#set zRAM size (recommended sizes are 64 and 128, as this compresses an actual block of RAM. Setting it higher will likely impede performance)
+echo $((1024*1024*128)) >  /sys/block/zram0/disksize
+
+#use busybox to create and activate zram0, if busybox is not in /system/xbin, modify accordingly
+/system/xbin/busybox mkswap /dev/block/zram0
+/system/xbin/busybox swapon /dev/block/zram0

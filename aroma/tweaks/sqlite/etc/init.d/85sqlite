@@ -1,0 +1,10 @@
+#!/system/bin/sh
+#SQLite database vaccum
+
+for i in \
+`busybox find /data -iname "*.db"`; 
+do \
+	/system/xbin/sqlite3 $i 'VACUUM;'; 
+	/system/xbin/sqlite3 $i 'REINDEX;'; 
+done;
+

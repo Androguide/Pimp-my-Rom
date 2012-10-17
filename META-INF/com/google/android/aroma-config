@@ -1,0 +1,670 @@
+﻿### LICENSE:
+#
+# Copyright (C) 2011 Ahmad Amarullah ( http://amarullz.com/ )
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+### FILE INFO:
+#
+# AROMA Installer 2.00 - AROMA Installer Test Script Configuration
+#       (c) 2011-2012 by Ahmad Amarullah
+#           amarullz - xda-developers
+#           http://www.amarullz.com/
+#
+#       Binary Version  : 2.51
+#       Binary Codename : Edelweis
+#
+### INFO:
+#
+# * AROMA Resource Dir  = META-INF/com/google/android/aroma
+#
+# * AROMA Temporary Dir = /tmp/aroma/
+#
+# * About Icon          = @alert - show <AROMA Resource Dir>/icons/alert.png
+#                         or if theme used it will find <themedir>/icon.alert.png
+#                         you can still access it via "icons/alert"
+#
+# * dp                  = Device Pixelate. WVGA/QHD = 3, HVGA = 2.
+#                         dp calculated with = round(min(width,height) / 160)
+#
+ini_set("dp","4");
+ini_set("rom_name",             ">>> Pimp My Rom <<<");
+ini_set("rom_version",          "2.0");
+ini_set("rom_author",           "Androguide.fr");
+ini_set("rom_device",           "Any android device");
+ini_set("rom_date",             "October 10th, 2012");
+
+##
+# Show Animated Splash
+#
+anisplash(
+  #-- Number of Loop
+    1,
+  
+  #-- Frame 1 [ Image, duration in millisecond ]. <AROMA Resource Dir>/splash/a[1..28].png
+    "splash/a1", 400,
+    "splash/a2", 230,
+    "splash/a3", 230,
+    "splash/a4", 230,
+    "splash/a5", 230,
+    "splash/a6", 230,
+    "splash/a7", 230,
+    "splash/a8", 230,
+    "splash/a9",  20,
+    "splash/a10", 20,
+    "splash/a11", 20,
+    "splash/a12", 20,
+    "splash/a13", 20,
+    "splash/a14", 20,
+    "splash/a15", 20,
+    "splash/a16", 20,
+    "splash/a17", 20,
+    "splash/a18", 20,
+    "splash/a19", 20,
+    "splash/a20", 20,
+    "splash/a21", 20,
+    "splash/a22", 20,
+    "splash/a23", 20,
+    "splash/a24", 20,
+    "splash/a25", 20,
+    "splash/a26", 20,
+    "splash/a27", 20,
+    "splash/a28", 20,
+    "splash/a29", 20,
+    "splash/a30", 30,
+    "splash/a31", 1500
+);
+
+  fontresload( "0", "ttf/DroidSans.ttf", "12" );
+  fontresload( "1", "ttf/DroidSans.ttf", "18" );
+
+theme("sense");
+
+###################################################################################################################
+#
+# STEP 1 - SHOW INFORMATIONS
+#
+
+viewbox(
+  #-- Title
+    "Welcome !",
+  
+  #-- Text
+    "You are about to<b> Pimp your Rom</b>\n\n\n"+
+
+      "   Version  : <b><#selectbg_g>"+ini_get("rom_version")+"</#></b>\n\n"+
+      "   Updated  : <b><#selectbg_g>"+ini_get("rom_date")+"</#></b>\n\n\n"+
+
+    "Press <b>Next</b> to continue with the installation.",
+
+  #-- Icon
+    "@apps"
+);
+
+###################################################################################################################
+#
+# STEP 2 - TERMS OF USE & REQUREMENTS
+#
+
+agreebox(
+  #-- Title
+    "Terms of Use & Requirements",
+  
+  #-- Subtitle / Description
+    "",
+  
+  #-- Icon
+    "@agreement",
+  
+  #-- Text Content ( Read from <AROMA Resource Dir>/read_me.txt )
+    resread("read_me.txt"),
+  
+  #-- Checkbox Text
+    "I agree with these Terms of Use.",
+  
+  #-- Unchecked Alert Message
+    "You need to agree with the Terms of Use to continue..."
+);
+
+############ Base ROM Choice ##########################
+
+selectbox(
+    # Title
+    "What kind of rom are you running ?",
+
+    # Sub Title
+    "What version of Android are your currently running ?",
+
+    # Icon
+    "@confirm",
+
+    # Will be saved in /tmp/aroma/baserom.prop
+    "baserom.prop",
+  
+   "AOSP-based Roms",          "Select if you are Pimpin' an aosp-based rom (cm9/10, aokp, paranoid, codenamedroid, etc...)", 2,      #--Group selected.1 = x
+   "Jelly Bean", "Android 4.1.x",0, #--selected.1 = 1
+   "Ice Cream Sandwich", "Android 4.0.x",0, #--selected.1 = 2
+   "Gingerbread/Honeycomb", "Android 2.3.x or 3.x.x",0, #--selected.1 = 3
+   
+
+   "STOCK-based Rom",             "Select if you are Pimpin' a Stock-based rom (needs init.d support)",   2,       #-- selected.2 = x
+   "Jelly Bean", "Android 4.1.x",0, #--selected.2 = 1
+   "Ice Cream Sandwich", "Android 4.0.x",0, #--selected.2 = 2
+   "Gingerbread/Honeycomb", "Android 2.3.x or 3.x.x",0 #--selected.2 = 3
+);
+
+
+
+###################################################################################################################
+#
+# STEP 5 - Choose the Tweaks, Mods and Apps to install
+#
+
+checkbox(
+  "Init.d Tweaks",
+  "Tick the tweaks you want to install :",
+  "@personalize",
+  "tweaks.prop",
+
+  "Init.d scripts : These pimpin' scripts will run at each boot","",2,#--item.0.1
+
+  "Touchscreen Responsiveness", "Tweaks the touchscreen for a better responsiveness and user experience",0,
+  
+  "Internet speed tweaks","Improves general browsing speed",0,###--2
+
+  "Battery consumption tweaks","Makes battery last longer",0,###--3
+
+  "Miscellanous Kernel improvements","Various kernel tweaks",0,###--4
+  
+  "Ondemand governor tweaks","Improves the behaviour of the Ondemand kernel governor",0,###--5
+
+  "Dalvik VM tweaks","Dalvik Virtual Machine tweaks",0,###--6
+  
+  "Defragmention of sqlite3 databases at each boot","Defrags databases to increase write-speed",0,###--7
+  
+  "Move dalvik-cache to cache","Increase data storage (will run only if cache is big enough for security)",0,###--8
+
+  "Bind-Mount Dalvik-Cache","The device can boot without the sdcard, useful for devices with a defectuous sdcard",0,###--9
+  
+  "Use strict minimum free memory handlers","Improves performances",0,###--10
+  
+  "Improve ext4 file-systems Performance","Enable data_writeback and improve I/O speed for ext4 partitions",0,###--11
+  
+  "Force GPU 2D Rendering","Force GPU rendering on 2D operations",0,###--12
+  
+  "Miscellanous ram tweaks","Several memory management improvements",0,###--13
+  
+  "Improve Multi-Tasking","Change system task-killer settings",0,###--14
+  
+  "Add SQLite Tweaks","Run VACUUM & REINDEX on each boot for better performance",0,###--15
+  
+  "Add Experimental Tweaks","Improve kernel and virtual memory management",0,###--16
+  
+  "Install various init.d smoothness tweaks","Improve general responsiveness",0,###--17
+  
+  "Enable External-Sdcard I/O tweaks","Improves ext-sd write/read speed and mount speed",0,###--18
+  
+  "Enable Internal Sdcard I/O tweaks","Improves internal sdcard write/read speed and mount speed",0,###--19
+  
+  "Zipalign apks at each boot","Will zipalign all apk files to increase smoothness",0,###--20
+  
+  "Enable main thunderbolt system_tweak script","Increase multitasking and general performances",0,###--21
+  
+  "Tweak CPU & GPU tuning","Will optimize CPU and GPU frequencies thresold",0,###--22
+  
+  "Use CFS tweaks","Improves the behaviour of the Completely Fair Scheduler",0,###--23
+  
+  "Use TCP buffers tweaks","Tweaks the tcp buffers to improve internet browsing speed",0,###--24
+  
+  "Optimize sqlite3 databases","Increases read/write speed of apps using databases (i.e : people)",0 ###--25
+);
+
+checkbox(
+  "Build.prop Tweaks",
+  "Tick the tweaks you want to install :",
+  "@customize",
+  "buildprop.prop",
+
+  ">>> INSTALL ALL TWEAKS <<<","Will apply every tweaks from the list below",0,
+  "3G Signal and Speed tweaks","Improve signal reception and dl/ul speed when using 3g",0,
+  "Battery saving tweaks","Saves battery without reducing performances",0,
+  "Camera quality tweaks","Increase camera's photo and video recording quality",0,
+  "Wifi tweaks","Connects and disconnects faster",0,
+  "Dalvik Ram tweaks","More free ram and apps load faster",0,
+  "Deeper Sleep","Saves more battery when on sleep mode",0,
+  "Dialing time tweaks","Dials faster, phone will ring instantly",0,
+  "Increase Jpg images quality","Raises the jpg image quality to 100%",0,
+  "Disable kernel error checking","Prevents some fc's from happening",0,
+  "Lock launcher in memory","Keeps your default launcher in memory to reduce redraws",0,
+  "Internet speed tweaks","Faster browsing and downloads",0,
+  "Touchscreen tweaks","Increase general touchscreen responsiveness",0,
+  "Remove black screen after calling","Reduces the time proximity sensor takes to make screen on",0,
+  "Allow purgeable assets","Free-up more ram",0,
+  "Scrolling tweaks","Better, faster and stronger scrolling",0,
+  "Video-Streaming tweaks","Smoother and faster internet video streaming",0,
+  "Quick Power-On","The device will boot faster",0,
+  "Flash-Led Tweaks","Better flash-led intensity and camera-flash quality",0
+);
+
+checkbox(
+  "Enable/Disable Functionalities",
+  "Tick the options you want :",
+  "@confirm",
+  "feat.prop",
+  "Allow Dalvik to use JIT","Dalvik will use Just-In-Time compiler so the cpu can be faster",0,
+  "Enable video hardware acceleration","Hardware video decoding enabled",0,
+  "Disable boot-animation","No boot-animation will be displayed of rfaster boot (doesn't work on ics/jb)",0,
+  "Enable Gpu ui rendering","Force the ui to be rendered by the gpu",0,
+  "Enable surface dithering","Better image quality at the cost of performances",0,
+  "Enable HSUPA","Enable HSUPA network mode",0,
+  "Disable adb debugging icon","Hide adb notification icon when usb is connected",0,
+  "Disable Volume Wake","The device won't wake when you hit the volume buttons",0,
+  "Disable sending of usage data","Prevents your device from sending usage data",0,
+  "Buttons backlight always on","Hardware buttons backlight always on when screen is on",0,
+  "Enable 16bit transparency","Might degrade performance",0,
+  "Remove Android logger","Use if you don't use logcats, the logger uses un-necessary ram",0,
+  "Re-Enable Android logger","Use if you disabled it but need logcats now",0,
+  "Disable Normalized Sleeper","Saves battery by transforming some wait-times into sleep times",0,
+  "Disable Gentle Fair Sleepers","Saves battery by transforming some wait-times into sleep times",0,
+  "Disable New Fair Sleepers","Saves battery by transforming some wait-times into sleep times",0
+);
+
+
+####################### Multitasking : LMK OOM & Minfree settings ###########################
+
+selectbox(
+    # Title
+    "Multitasking",
+
+    # Sub Title
+    "Unleash your real multitasking power by Pimping your Low Memory Killer values",
+
+    # Icon
+    "@update",
+
+    # Will be saved in /tmp/aroma/baserom.prop
+    "multi.prop",
+
+
+  "OOM Priorities :","Defines the type of apps killed 1st when Out Of Memory(OOM)\n",2,
+
+  "Low","Low level, less multitasking",0,
+  "Mid","Medium level, not much multitasking",0,
+  "High","High Level, good multitasking",0,
+  "Very High","Very High Level, extreme multitasking",0,
+
+
+
+  "Minfree Settings :","Ram thresholds above which apps start to be auto-killed\n",2,
+
+  "Low","Low level, less multitasking. For older devices",0,
+  "Mid","Medium level, not much multitasking",0,
+  "High","High Level, good multitasking",0,
+  "Very High","Very High Level, extreme multitasking. For high-end devices",0,
+
+
+
+  "ZRAM (Zero Capacitor Ram) :","Virtually increase available ram by compressing swap\n",2,
+
+  "64mb","Low value, gives a small amount additional memory available for apps",0,
+  "128mb","Medium value, gives a good amount of additional memory available for apps. Higher value degrades performance.",0,
+
+
+
+  "Kernel sysctl tweaks :","Mutitasking-related kernel tweaks using sysctl\n",2,
+  "Kernel Multitasking behaviour tweaks","Will improve the kernel's stability and strategy during hard multitasking",0,
+
+  "Dalvik sysctl tweaks :","Mutitasking-related dalvik tweaks using sysctl\n",2,
+  "Virtual Machine behaviour improvements","Will improve the way Dalvik handles hard multitasking",0
+
+);
+
+
+############################ Sysctl tweaks ##################################
+
+
+checkbox(
+  "Networks & Internet",
+  "Security, Stability and Speed Improvements using sysctl",
+  "@default",
+  "sysctlnet.prop",
+
+  "Network Security\n","",2,
+  "Reinforce your TCP/IP Stack to resist to SYN attacks","Avoid those nasty Denial of Service (DoS) attacks",0,
+  "Refuse redirects","Internet redirections won't be accepted for security (some websites might require redirects)",0,
+  "Refuse source-routing","Source-routing allows the tracing of packets, which black-hat hackers can use to hack your device",0,
+ 
+  "Network Stability & Speed\n","",2,
+  "Network multitasking stability","Improve buffer size and queue size for each tcp sockets",0,
+  "Avoid time-wait","Re-use Sockets in time-wait state to avoid memory-loading",0,
+  "IPv4 protocol sysctl tweaks","Overall ipv4 speed improvements",0,
+  "DNS and ppp0 interface tweaks","faster ppp0 interface & faster name resolution (=faster connection to websites)",0
+  
+);
+
+
+#######################################################################
+#
+# GPS.conf files for most countries
+#
+
+selectbox(
+  "GPS Configuration",
+  "Select your country from the list below",
+  "@customize",
+  "gps.prop",
+
+  "Installs the right gps.conf file for your country to increase gps accuracy & lock-speed\n","",2,#--selected.1
+
+  "Angola","",0,
+  "Argentina","",0,
+  "Australia","",0,
+  "Austria","",0,
+  "Bangladesh","",0,
+  "Belarus","",0,
+  "Belgium","",0,
+  "Bosnia & Herzegovina","",0,
+  "Brazil","",0,
+  "Bulgaria","",0,
+  "Cambodia","",0,
+  "Canada","",0,
+  "Chile","",0,
+  "China","",0,
+  "Costa-Rica","",0,
+  "Croatia","",0,
+  "Czech Republic","",0,
+  "Denmark","",0,
+  "El Salvador","",0,
+  "Estonia","",0,
+  "Finland","",0,
+  "France","",0,
+  "Germany","",0,
+  "Greece","",0,
+  "Guatemala","",0,
+  "Hong-Kong","",0,
+  "Hungary","",0,
+  "India","",0,
+  "Indonesia","",0,
+  "Iran","",0,
+  "Ireland","",0,
+  "Israel","",0,
+  "Italy","",0,
+  "Japan","",0,
+  "Korea","",0,
+  "Kyrgyzstan","",0,
+  "Latvia","",0,
+  "Lithuania","",0,
+  "Luxembourg","",0,
+  "Macedonia","",0,
+  "Madagascar","",0,
+  "Malaysia","",0,
+  "Mexico","",0,
+  "Moldova","",0,
+  "Netherlands","",0,
+  "New Caledonia","",0,
+  "New Zealand","",0,
+  "Norway","",0,
+  "Oman","",0,
+  "Pakistan","",0,
+  "Panama","",0,
+  "Philippines","",0,
+  "Poland","",0,
+  "Portugal","",0,
+  "Qatar","",0,
+  "Republic of Serbia","",0,
+  "Romania","",0,
+  "Russian Federation","",0,
+  "Saudi Arabia","",0,
+  "Singapore","",0,
+  "Slovakia","",0,
+  "Slovenia","",0,
+  "South Africa","",0,
+  "Spain","",0,
+  "Sri Lanka","",0,
+  "Sweden","",0,
+  "Switzerland","",0,
+  "Taiwan","",0,
+  "Tanzania","",0,
+  "Thailand","",0,
+  "Turkey","",0,
+  "Ukraine","",0,
+  "United Arab Emirates","",0,
+  "United Kingdom","",0,
+  "United States of America","",0,
+  "Uzbekistan","",0,
+  "Venezuela","",0,
+  "Vietnam","",0,
+  "Yugoslavia","",0,
+
+"Continents","Use your continent file if your country isn't on the list",2,
+
+  "Africa","",0,
+  "Asia","",0,
+  "Europe","",0,
+  "North America","",0,
+  "Oceania","",0,
+  "South America","",0
+);
+
+
+###################################################################################################################
+#
+# Custom Apps
+#
+
+checkbox(
+    # Title
+    "Extra Applications",
+
+    # Sub Title
+    "Choose the extra apps you would like to install.",
+
+    # Icon
+    "@install",
+
+    # Will be saved in /tmp/aroma/apps.prop
+    "apps.prop",
+
+    #----------------------------------[       CheckBox        ]-----------------------------------#
+    # TITLE            |  SUBTITLE                                                 | Initial Value #
+    #------------------+-----------------------------------------------------------+---------------#
+    "Launchers",         "",                                                           2,      #-- Group 1
+    "Apex Launcher",        "Apex Launcher v1.2.5",                                    0,      #-- item.1.1
+    "Nova Launcher",        "Nova Launcher v1.2.2",                                    0,      #-- item.1.2
+    "Misc. Apps",        "",                                                           2,      #-- Group 2
+    "Solid Explorer",     "Solid Explorer Beta2 v2.5.1.6",                               0,      #-- item.2.1
+    "Rom Toolbox Lite",     "Rom Toolbox Lite v5.2.2",                                 0,      #-- item.2.2
+    "Adobe Flash Player",   "Enjoy flash video streaming and gaming on JB",            0,      #-- item.2.3
+    "Script Manager",   "Very useful app for running scripts",  			 0,      #-- item.2.4
+    "Hulu+ (Portrait)",   "The famous video streaming service modified to work on any device",	 0,      #-- item.2.5
+    "Hulu+ (Landscape)",    "The famous video streaming service modified to work on any device", 0,      #-- item.2.6
+    "Smart Stay EX",        "Prevents your screen from turning off as long as you look at it (SGS3 alike)", 0      #-- item.1.2
+
+    #--------[ Initial Value = 0: Unselected, 1: Selected, 2: Group Item, 3: Not Visible ]---------#
+  );
+ # /Custom Apps Menu
+
+
+##############CM9-10 ROM SELECTED##############################
+
+if prop("baserom.prop","selected.1")=="1" then
+
+###################################################################################################################
+#
+# STEP 7 - Choose Extra Features/Mods
+#
+
+checkbox(
+  "Add extra features to your tab !",
+  "Choose from the list below :",
+  "@confirm",
+  "themesjb.prop",
+
+  "Add Open-VPN support","Virtual private network (VPN) techniques for creating secure point-to-point or site-to-site connection",0,
+  "Beats Audio","Add beats-audio binaries and modified DSP Manager for a greater sound control experience",0,
+  "Install Adrenaline Boost script","Allows to free up more memory when needed, type su boost in terminal emulator",0,
+  "Sony Walkman","Install Sony Walkman Suite : Music Player, Vizualizer, Clearbass and Image Gallery & Editor",0,
+  "Block Ads","Block ads on internet and in-app ads by installing an Adblock host file of more than 200 000 advertising hosts !",0
+
+);
+#-end aosp-based
+endif;
+
+
+if prop("baserom.prop","selected.1")=="2" then
+
+###################################################################################################################
+#
+# STEP 7 - Choose Extra Features/Mods
+#
+
+checkbox(
+  "Add extra features to your tab !",
+  "Choose from the list below :",
+  "@confirm",
+  "themes.prop",
+
+  "Add Open-VPN support","Virtual private network (VPN) techniques for creating secure point-to-point or site-to-site connection",0,
+  "Beats Audio","Add beats-audio modified DSP Manager for a greater sound control experience",0,
+  "Install Adrenaline Boost script","Allows to free up more memory when needed, will also run at each boot",0,
+  "Sony Walkman","Install Sony Walkman Suite : Music Player, Vizualizer, Clearbass and Image Gallery & Editor",0,
+  "Block Ads","Block ads on internet and in-app ads by installing an Adblock host file of more than 200 000 advertising hosts !",0
+
+);
+
+#-end aosp-based
+endif;
+
+
+if
+prop("baserom.prop","selected.1")=="3" then
+
+checkbox(
+  "Add extra features to your tab !",
+  "Choose from the list below :",
+  "@confirm",
+  "themestock.prop",
+
+  "Add Open-VPN support","Virtual private network (VPN) techniques for creating secure point-to-point or site-to-site connection",0,
+  "Beats Audio","Add beats-audio modified DSP Manager for a greater sound experience",0,
+  "Install Adrenaline Boost script","Allows to free up more memory when needed, will also run at each boot",0,
+  "Block Ads","Block ads on internet and in-app ads by installing an Adblock host file of more than 200 000 advertising hosts !",0
+
+);
+
+endif;
+
+#########################################
+
+if
+prop("baserom.prop","selected.2")=="1" then
+
+checkbox(
+  "Add extra features to your tab !",
+  "Choose from the list below :",
+  "@confirm",
+  "themestockjb.prop",
+
+  "Add Open-VPN support","Virtual private network (VPN) techniques for creating secure point-to-point or site-to-site connection",0,
+  "Beats Audio","Add beats-audio modified DSP Manager for a greater sound experience",0,
+  "Install Adrenaline Boost script","Allows to free up more memory when needed, will also run at each boot",0,
+  "Sony Walkman","Install Sony Walkman Suite : Music Player, Vizualizer, Clearbass and Image Gallery & Editor",0,
+  "Block Ads","Block ads on internet and in-app ads by installing an Adblock host file of more than 200 000 advertising hosts !",0
+);
+
+endif;
+
+#############################################
+
+if
+prop("baserom.prop","selected.2")=="2" then
+
+checkbox(
+  "Add extra features to your tab !",
+  "Choose from the list below :",
+  "@confirm",
+  "themestockics.prop",
+
+  "Add Open-VPN support","Virtual private network (VPN) techniques for creating secure point-to-point or site-to-site connection",0,
+  "Beats Audio","Add beats-audio modified DSP Manager for a greater sound experience",0,
+  "Install Adrenaline Boost script","Allows to free up more memory when needed, will also run at each boot",0,
+  "Sony Walkman","Install Sony Walkman Suite : Music Player, Vizualizer, Clearbass and Image Gallery & Editor",0,
+  "Block Ads","Block ads on internet and in-app ads by installing an Adblock host file of more than 200 000 advertising hosts !",0
+);
+
+endif;
+
+
+###############################################
+
+
+if
+prop("baserom.prop","selected.2")=="3" then
+
+checkbox(
+  "Add extra features to your tab !",
+  "Choose from the list below :",
+  "@confirm",
+  "themestock.prop",
+
+  "Add Open-VPN support","Virtual private network (VPN) techniques for creating secure point-to-point or site-to-site connection",0,
+  "Beats Audio","Add beats-audio modified DSP Manager for a greater sound experience",0,
+  "Install Adrenaline Boost script","Allows to free up more memory when needed, will also run at each boot",0,
+  "Block Ads","Block ads on internet and in-app ads by installing an Adblock host file of more than 200 000 advertising hosts !",0
+);
+
+endif;
+
+###################################################################################################################
+#
+# STEP 8 - INSTALLING
+#
+
+ini_set("text_next", "Install now");
+viewbox(
+  #-- Title
+    "Ready to install",
+
+  #-- Text
+    "You are now ready to begin installation.\n\n"+
+    "Press <b>Install now</b> to start.\n\n"+
+    "If you want to review or change any of your installation settings, press <b>Back</b>.",
+
+  #-- Icon
+    "@apps"
+);
+
+ini_set("text_next", "Finish");
+
+install(
+  "Installing",
+  "Flashing <b>"+ini_get("rom_name")+"</b>...\n"+
+  "Please Wait...",
+  "icons/install",
+  "Now press Finish button"
+);
+
+checkviewbox(
+    "Installation was successful !",
+    "You have just successfully Pimped your ROM ! <b>\n\n"+
+    "<#selectbg_g><b>Thanks for trying this Mod.</b></#>\n\n",
+    "@welcome",
+    "Reboot my device now.",
+    "0",
+    "reboot_it"
+);
+
+exec("/sbin/cp","/tmp/aroma/.install.log","/sdcard/PimpMyRom.log");
+
+if getvar("reboot_it")=="1" then reboot("onfinish");
+endif;

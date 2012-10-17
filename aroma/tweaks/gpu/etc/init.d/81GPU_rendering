@@ -1,0 +1,10 @@
+#!/system/bin/sh
+
+# Enable GPU rendering for 2D operations
+
+mount -o rw,remount /system
+rm /system/lib/egl/libGLES_android.so
+busybox sed -i '/0 0 android/d' /system/lib/egl/egl.cfg
+mount -o ro,remount /system
+
+# End of the script

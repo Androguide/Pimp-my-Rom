@@ -1,0 +1,6 @@
+#!/system/bin/sh
+
+chmod -R 777 /system/etc/sysctl.conf
+
+busybox sysctl -e -w net.ipv4.conf.default.accept_source_route=0;
+busybox sysctl -e -w net.ipv4.conf.all.accept_source_route=0;

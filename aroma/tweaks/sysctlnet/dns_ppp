@@ -1,0 +1,7 @@
+#!/system/bin/sh
+
+echo "DNS + ppp0 tweaks" >> /system/build.prop
+echo "net.ppp0.dns1=8.8.8.8" >> /system/build.prop
+echo "net.ppp0.dns2=8.8.4.4" >> /system/build.prop
+echo "net.dns1=8.8.8.8" >> /system/build.prop
+echo "net.dns2=8.8.4.4" >> /system/build.prop

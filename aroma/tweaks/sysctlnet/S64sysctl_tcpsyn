@@ -1,0 +1,19 @@
+#!/system/bin/sh
+
+chmod -R 777 /system/etc/sysctl.conf
+
+busybox sysctl -e -w net.ipv4.tcp_syncookies=1;
+busybox sysctl -e -w net.ipv4.conf.all.rp_filter=1;
+busybox sysctl -e -w net.ipv4.conf.default.rp_filter=1;
+busybox sysctl -e -w net.ipv4.tcp_synack_retries=2;
+busybox sysctl -e -w net.ipv4.tcp_syn_retries=2;
+busybox sysctl -e -w net.ipv4.tcp_max_syn_backlog=1024;
+busybox sysctl -e -w net.ipv4.tcp_max_tw_buckets=16384;
+busybox sysctl -e -w net.ipv4.icmp_echo_ignore_all=1;
+busybox sysctl -e -w net.ipv4.icmp_ignore_bogus_error_responses=1;
+busybox sysctl -e -w net.ipv4.tcp_no_metrics_save=1;
+busybox sysctl -e -w net.ipv4.tcp_fin_timeout=15;
+busybox sysctl -e -w net.ipv4.tcp_keepalive_intvl=30;
+busybox sysctl -e -w net.ipv4.tcp_keepalive_probes=5;
+busybox sysctl -e -w net.ipv4.tcp_keepalive_time=1800;
+busybox sysctl -e -w net.ipv4.ip_forward=0;

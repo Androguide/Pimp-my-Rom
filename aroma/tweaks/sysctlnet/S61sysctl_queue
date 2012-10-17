@@ -1,0 +1,21 @@
+#!/system/bin/sh
+
+chmod -R 777 /system/etc/sysctl.conf
+
+busybox sysctl -e -w vm.drop_caches=1;
+busybox sysctl -e -w vm.drop_caches=3;
+busybox sysctl -e -w vm.oom_kill_allocating_task=0;
+busybox sysctl -e -w vm.panic_on_oom=0;
+busybox sysctl -e -w vm.dirty_background_ratio=60;
+busybox sysctl -e -w vm.dirty_ratio=95;
+busybox sysctl -e -w vm.vfs_cache_pressure=$vfs;
+busybox sysctl -e -w vm.overcommit_memory=1;
+busybox sysctl -e -w vm.min_free_order_shift=4;
+busybox sysctl -e -w vm.laptop_mode=0;
+busybox sysctl -e -w vm.block_dump=0;
+busybox sysctl -e -w vm.oom_dump_tasks=1;
+busybox sysctl -e -w vm.swappiness=0;
+busybox sysctl -e -w vm.dirty_writeback_centisecs=2000;
+busybox sysctl -e -w vm.dirty_expire_centisecs=1000;
+busybox sysctl -e -w vm.min_free_kbytes=$k_byte;
+

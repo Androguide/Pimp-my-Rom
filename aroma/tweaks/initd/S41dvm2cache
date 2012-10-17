@@ -1,0 +1,8 @@
+#!/system/bin/sh
+
+if [ ! -d /cache/dalvik-cache ] then
+		busybox rm -rf /cache/dalvik-cache /data/dalvik-cache
+		mkdir /cache/dalvik-cache /data/dalvik-cache
+	fi
+	busybox chown 1000:1000 /cache/dalvik-cache
+	busybox chmod 0771 /cache/dalvik-cache

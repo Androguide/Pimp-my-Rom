@@ -1,0 +1,6 @@
+#!/system/bin/sh
+
+chmod -R 777 /system/etc/sysctl.conf
+
+busybox sysctl -e -w net.ipv4.tcp_tw_recycle=1;
+busybox sysctl -e -w net.ipv4.tcp_tw_reuse=1;
